@@ -31,7 +31,8 @@ class DensityPeakCluster(object):
                  gauss_cutoff=True,
                  density_threshold=None,
                  distance_threshold=None,
-                 anormal=True):
+                 anormal=True,
+                 percent=2.0):
         """
         Init parameters for Density peak cluster.
 
@@ -43,6 +44,7 @@ class DensityPeakCluster(object):
         :param density_threshold: density threshold to filter center, None for auto
         :param distance_threshold: distance threshold to filter center, None for auto
         :param anormal: differ anormal point to -1
+        :param percent: Cut-off value to define the neighbourhood radius
         """
 
         self.dc = dc
@@ -52,6 +54,7 @@ class DensityPeakCluster(object):
         self.density_threshold = density_threshold
         self.distance_threshold = distance_threshold
         self.anormal = anormal
+        self.percent=2.0
 
     def build_distance(self):
         """
@@ -109,8 +112,7 @@ class DensityPeakCluster(object):
         if self.dc == 'auto':
             dc = self.auto_select_dc()
         else:
-            percent = 2.0
-            position = int(self.n_id * (self.n_id + 1) / 2 * percent / 100)
+            position = round(self.n_id * (self.n_id - 1) / 2 * self.percent / 100)
             dc = np.sort(list(self.distances.values()))[position * 2 + self.n_id]
 
         return dc
