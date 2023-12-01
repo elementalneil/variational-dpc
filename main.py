@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from dpca import DensityPeakCluster
-
+from shared_nn import aSNNC
 
 # Import Dataset
 
@@ -22,8 +22,8 @@ dpca = DensityPeakCluster(percent = pct, density_threshold = 0, distance_thresho
 dpca.fit(df.iloc[:, :])
 
 # Plot Initial Cluster Formation
-sns.scatterplot(x = df.iloc[:, 0], y = df.iloc[:, 1], hue = dpca.labels_, palette = "bright")
-plt.show()
+# sns.scatterplot(x = df.iloc[:, 0], y = df.iloc[:, 1], hue = dpca.labels_, palette = "bright")
+# plt.show()
 
 
 # Dividing Representatives into Density Levels
@@ -95,4 +95,26 @@ else:
     # sns.scatterplot(x = l1_datapoints[:, 0], y = l1_datapoints[:, 1])
     # plt.show()
 
+    # Perform aSNNC in l1
+    asnnc = aSNNC(l1_datapoints)
+    # print(asnnc.labels)
+    labels = [tuple(label) for label in asnnc.labels]
+    # sns.scatterplot(x = l1_datapoints[:, 0], y = l1_datapoints[:, 1], hue = labels)
+    # plt.show()
+
+    # Final clusters will be stored in the form {centre: [datapoints]}
+    final_clusters = {}
+
+    # Iterate through each asnnc cluster to find boundary points
+    bp_threshold = len(l1_datapoints) / len(asnnc.centers)
     
+    boundary_points = []
+    print(asnnc.centers)
+    for center in asnnc.centers:
+        count = 0
+        for label in labels:
+            print(label, center)
+            if tuple(label) == tuple(center):
+                count += 1
+
+        
